@@ -12,18 +12,22 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlayList extends DateAudit {
+public class Abum extends DateAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
     private String description;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "playlist_song",
-            joinColumns = @JoinColumn(name = "playlist_id"),
+            joinColumns = @JoinColumn(name = "abum_id"),
             inverseJoinColumns = @JoinColumn(name = "song_id")
     )
     private List<Song> songs;
