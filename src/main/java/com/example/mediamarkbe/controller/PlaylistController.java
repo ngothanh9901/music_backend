@@ -1,0 +1,49 @@
+package com.example.mediamarkbe.controller;
+
+import com.example.mediamarkbe.dto.AlbumPayload;
+import com.example.mediamarkbe.dto.PlaylistResponse;
+import com.example.mediamarkbe.dto.SongResponse;
+import com.example.mediamarkbe.service.AlbumService;
+import com.example.mediamarkbe.service.SongService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/playlist")
+public class PlaylistController {
+    private final AlbumService albumService;
+    private final SongService songService;
+    @PostMapping
+    public ResponseEntity<PlaylistResponse> createPlaylist(@RequestBody AlbumPayload albumPayload){
+        return albumService.createAlbum(albumPayload);
+    }
+    @GetMapping
+    public ResponseEntity<List<PlaylistResponse>> findPlaylistsByUser(@RequestParam Long userId,
+                                                                @RequestParam Integer page,
+                                                                @RequestParam Integer size){
+        return albumService.findAlbumsByUser(userId, page, size);
+    }
+    @DeleteMapping
+    public ResponseEntity<?> deletePlaylist(@RequestParam Long playlistId){
+        return albumService.deleteAlbum(playlistId);
+    }
+    @PutMapping
+    public ResponseEntity<?> editPlaylist(@RequestBody AlbumPayload albumPayload){
+        return albumService.editAlbum(albumPayload);
+    }
+
+    @GetMapping("/addSong")
+    public ResponseEntity<SongResponse> addSongToPlaylist(@RequestParam Long songId, @RequestParam Long playlistId){
+        return songService.addSongToAlbum(songId, playlistId);
+    }
+
+    @DeleteMapping("/deleteSong")
+    public ResponseEntity<?> deleteSongFromPlaylist(@RequestParam Long songId, @RequestParam Long playlistId){
+        return songService.deleteSongFromAlbum(songId, playlistId);
+    }
+}
