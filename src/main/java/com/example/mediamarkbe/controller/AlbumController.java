@@ -6,7 +6,6 @@ import com.example.mediamarkbe.dto.SongResponse;
 import com.example.mediamarkbe.service.AlbumService;
 import com.example.mediamarkbe.service.SongService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +13,8 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/playlist")
-public class PlaylistController {
+@RequestMapping("/api/album")
+public class AlbumController {
     private final AlbumService albumService;
     private final SongService songService;
     @PostMapping
