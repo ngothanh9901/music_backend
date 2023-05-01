@@ -26,7 +26,7 @@ public class Album extends DateAudit {
     private User user;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "playlist_song",
+    @JoinTable(name = "album_song",
             joinColumns = @JoinColumn(name = "abum_id"),
             inverseJoinColumns = @JoinColumn(name = "song_id")
     )
