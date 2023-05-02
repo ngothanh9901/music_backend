@@ -45,4 +45,5 @@ public class AlbumController {
     public ResponseEntity<?> deleteSongFromPlaylist(@RequestParam Long songId, @RequestParam Long playlistId){
         return songService.deleteSongFromAlbum(songId, playlistId);
     }
+
 }

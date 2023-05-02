@@ -1,5 +1,6 @@
 package com.example.mediamarkbe.service.impl;
 
+import com.example.mediamarkbe.dto.FindingSongDTO;
 import com.example.mediamarkbe.dto.SongPayload;
 import com.example.mediamarkbe.dto.SongResponse;
 import com.example.mediamarkbe.model.Album;
@@ -12,6 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -53,6 +57,14 @@ public class SongServiceImpl implements SongService {
         album.getSongs().remove(song);
         return ResponseEntity.noContent().build();
     }
+
+    @Override
+    public List<SongResponse> findSong(FindingSongDTO payload) {
+        List<Song> songs = songRepository.findByNameContaining(payload.getName());
+        List<SongResponse> res = songs.stream().map(x ->{return mapSongToDto(x);}).collect(Collectors.toList());
+        return res;
+    }
+
     private SongResponse mapSongToDto(Song song){
         SongResponse songResponse = new SongResponse();
         songResponse.setName(song.getName());
