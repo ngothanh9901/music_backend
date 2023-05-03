@@ -17,4 +17,6 @@ public interface SongService {
 
     ResponseEntity<?> deleteSongFromAlbum(Long songId, Long albumId);
     ResponseObject<SongResponse> findSong(FindingSongDTO payload, Pageable pageable);
+
+    ResponseEntity<List<SongResponse>> findSongsInAlbum(Long albumId);
 }
