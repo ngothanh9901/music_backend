@@ -11,4 +11,5 @@ public class SongResponse {
     private String description;
     private String avatarLink;
     private String musicLink;
+    private String category;
 }
