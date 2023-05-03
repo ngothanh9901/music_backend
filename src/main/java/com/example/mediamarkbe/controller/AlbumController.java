@@ -46,4 +46,8 @@ public class AlbumController {
         return songService.deleteSongFromAlbum(songId, playlistId);
     }
 
+    @GetMapping("/songs")
+    public ResponseEntity<List<SongResponse>> findSongsInPlaylist(@RequestParam Long playlistId){
+        return songService.findSongsInAlbum(playlistId);
+    }
 }

@@ -65,11 +65,20 @@ public class SongServiceImpl implements SongService {
         return res;
     }
 
+    @Override
+    public ResponseEntity<List<SongResponse>> findSongsInAlbum(Long albumId) {
+        List<Song> songs = albumRepository.findSongsByAlbum(albumId);
+        List<SongResponse> songResponses = songs.stream().map(song -> mapSongToDto(song)).collect(Collectors.toList());
+        return ResponseEntity.ok().body(songResponses);
+    }
+
     private SongResponse mapSongToDto(Song song){
         SongResponse songResponse = new SongResponse();
         songResponse.setName(song.getName());
         songResponse.setDescription(song.getDescription());
         songResponse.setAvatarLink(song.getAvatarLink());
+        songResponse.setMusicLink(song.getMusicLink());
+        songResponse.setCategory(song.getCategory());
         return songResponse;
     }
 }
