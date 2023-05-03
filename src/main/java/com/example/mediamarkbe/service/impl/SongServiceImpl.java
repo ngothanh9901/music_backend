@@ -6,14 +6,20 @@ import com.example.mediamarkbe.dto.SongPayload;
 import com.example.mediamarkbe.dto.SongResponse;
 import com.example.mediamarkbe.model.Album;
 import com.example.mediamarkbe.model.Song;
+import com.example.mediamarkbe.model.User;
 import com.example.mediamarkbe.respository.AlbumRepository;
 import com.example.mediamarkbe.respository.SongRepository;
+import com.example.mediamarkbe.respository.UserRepository;
+import com.example.mediamarkbe.security.UserPrincipal;
 import com.example.mediamarkbe.service.SongService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +34,7 @@ public class SongServiceImpl implements SongService {
     private final SongRepository songRepository;
 
     private final AlbumRepository albumRepository;
+    private final UserRepository userRepository;
     @Override
     public ResponseEntity<SongResponse> addSong(SongPayload songPayload) {
         Song song = SongPayload.convertToModel(songPayload);
@@ -63,7 +70,14 @@ public class SongServiceImpl implements SongService {
 
     @Override
     public ResponseObject<SongResponse> findSong(FindingSongDTO payload, Pageable payPageable) {
-        Page<Song> data = songRepository.findSong(payload,payPageable);
+        Album album = null;
+        if(StringUtils.isNotBlank(payload.getAbumName())){
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+            User user = userRepository.findById(userPrincipal.getId()).get();
+             album = albumRepository.findByUserAndName(user,payload.getName());
+        }
+        Page<Song> data = songRepository.findSong(payload,payPageable,album);
         List<SongResponse> content = data.getContent().stream().map(s->mapSongToDto(s)).collect(Collectors.toList());
         ResponseObject<SongResponse> responseObject = new ResponseObject<>(content,data.getNumber()+1,data.getSize(),
                 data.getTotalElements(),data.getTotalPages(),data.isLast());

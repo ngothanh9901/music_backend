@@ -1,13 +1,20 @@
 package com.example.mediamarkbe.respository.customRepository.impl;
 
 import com.example.mediamarkbe.dto.FindingSongDTO;
+import com.example.mediamarkbe.model.Album;
 import com.example.mediamarkbe.model.Song;
+import com.example.mediamarkbe.model.User;
+import com.example.mediamarkbe.respository.UserRepository;
 import com.example.mediamarkbe.respository.customRepository.CustomizedSongRepository;
+import com.example.mediamarkbe.security.UserPrincipal;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -16,11 +23,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CustomizedSongRepositoryImpl implements CustomizedSongRepository {
-
     @PersistenceContext
     private EntityManager entityManager;
 
-    private Query buidHqlQueryFindSong(FindingSongDTO payload, Pageable pageable, boolean isCount){
+    private Query buidHqlQueryFindSong(FindingSongDTO payload, Pageable pageable, Album album,boolean isCount){
         Map<String, Object> paramMap = new HashMap<>();
         String hqlQuery = "select s from Song s";
         if(isCount){
@@ -28,8 +34,13 @@ public class CustomizedSongRepositoryImpl implements CustomizedSongRepository {
         }
         hqlQuery+=" where 1=1";
         if (StringUtils.isNotBlank(payload.getName())) {
-            hqlQuery += "  and ( lower(p.name) like :text )";
+            hqlQuery += "  and ( lower(s.name) like :text )";
             paramMap.put("text", "%"+payload.getName().toLowerCase().trim()+"%");
+        }
+
+        if(album!=null){
+            hqlQuery += "  and ( :album IN s.albums)";
+            paramMap.put("album",album);
         }
 
         if (!isCount && pageable != null && pageable.getSort() != null) {
@@ -50,9 +61,9 @@ public class CustomizedSongRepositoryImpl implements CustomizedSongRepository {
         return query;
     }
     @Override
-    public Page<Song> findSong(FindingSongDTO payload, Pageable pageable) {
-        long total = (long) buidHqlQueryFindSong(payload,pageable,true).getSingleResult();
-        Query query= buidHqlQueryFindSong(payload,pageable,false);
+    public Page<Song> findSong(FindingSongDTO payload, Pageable pageable,Album album) {
+        long total = (long) buidHqlQueryFindSong(payload,pageable,album,true).getSingleResult();
+        Query query= buidHqlQueryFindSong(payload,pageable,album,false);
         return new PageImpl<>(query.getResultList(), pageable, total);
     }
 }

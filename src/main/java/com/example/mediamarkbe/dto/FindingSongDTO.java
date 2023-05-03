@@ -9,4 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FindingSongDTO {
     String name;
+    String abumName;
+    boolean user ;
 }
