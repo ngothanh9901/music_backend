@@ -1,10 +1,12 @@
 package com.example.mediamarkbe.controller;
 
 import com.example.mediamarkbe.dto.FindingSongDTO;
+import com.example.mediamarkbe.dto.ResponseObject;
 import com.example.mediamarkbe.dto.SongPayload;
 import com.example.mediamarkbe.dto.SongResponse;
 import com.example.mediamarkbe.service.SongService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +27,8 @@ public class SongController {
         return songService.deleteSong(songId);
     }
 
-    public List<SongResponse> findSong(FindingSongDTO payload){
-        return songService.findSong(payload);
+    @GetMapping
+    public ResponseObject<SongResponse> findSong(FindingSongDTO payload, Pageable pageable){
+        return songService.findSong(payload,pageable);
     }
 }

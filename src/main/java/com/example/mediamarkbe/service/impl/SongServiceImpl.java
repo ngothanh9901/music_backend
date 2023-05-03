@@ -1,6 +1,7 @@
 package com.example.mediamarkbe.service.impl;
 
 import com.example.mediamarkbe.dto.FindingSongDTO;
+import com.example.mediamarkbe.dto.ResponseObject;
 import com.example.mediamarkbe.dto.SongPayload;
 import com.example.mediamarkbe.dto.SongResponse;
 import com.example.mediamarkbe.model.Album;
@@ -9,6 +10,8 @@ import com.example.mediamarkbe.respository.AlbumRepository;
 import com.example.mediamarkbe.respository.SongRepository;
 import com.example.mediamarkbe.service.SongService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -59,17 +62,22 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public List<SongResponse> findSong(FindingSongDTO payload) {
-        List<Song> songs = songRepository.findByNameContaining(payload.getName());
-        List<SongResponse> res = songs.stream().map(x ->{return mapSongToDto(x);}).collect(Collectors.toList());
-        return res;
+    public ResponseObject<SongResponse> findSong(FindingSongDTO payload, Pageable payPageable) {
+        Page<Song> data = songRepository.findSong(payload,payPageable);
+        List<SongResponse> content = data.getContent().stream().map(s->mapSongToDto(s)).collect(Collectors.toList());
+        ResponseObject<SongResponse> responseObject = new ResponseObject<>(content,data.getNumber()+1,data.getSize(),
+                data.getTotalElements(),data.getTotalPages(),data.isLast());
+
+        return responseObject;
     }
 
     private SongResponse mapSongToDto(Song song){
         SongResponse songResponse = new SongResponse();
+        songResponse.setId(song.getId());
         songResponse.setName(song.getName());
         songResponse.setDescription(song.getDescription());
         songResponse.setAvatarLink(song.getAvatarLink());
+        songResponse.setMusicLink(song.getMusicLink());
         return songResponse;
     }
 }
