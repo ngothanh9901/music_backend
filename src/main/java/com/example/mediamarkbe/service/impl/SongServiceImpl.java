@@ -74,8 +74,10 @@ public class SongServiceImpl implements SongService {
         if(StringUtils.isNotBlank(payload.getAbumName())){
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+            Long id = userPrincipal.getId();
             User user = userRepository.findById(userPrincipal.getId()).get();
-             album = albumRepository.findByUserAndName(user,payload.getName());
+             album = albumRepository.findByUserAndName(user,payload.getAbumName());
+//            album = albumRepository.findByUser(user);
         }
         Page<Song> data = songRepository.findSong(payload,payPageable,album);
         List<SongResponse> content = data.getContent().stream().map(s->mapSongToDto(s)).collect(Collectors.toList());

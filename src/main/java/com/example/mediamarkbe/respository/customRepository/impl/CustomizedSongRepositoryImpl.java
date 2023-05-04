@@ -28,9 +28,16 @@ public class CustomizedSongRepositoryImpl implements CustomizedSongRepository {
 
     private Query buidHqlQueryFindSong(FindingSongDTO payload, Pageable pageable, Album album,boolean isCount){
         Map<String, Object> paramMap = new HashMap<>();
+
         String hqlQuery = "select s from Song s";
-        if(isCount){
+
+        if(isCount && album ==null){
             hqlQuery = "select count(s) from Song s";
+        }else if (isCount && album != null){
+            hqlQuery = "select count(s) FROM Song s JOIN s.albums a ";
+        }
+        if(!isCount && album!=null){
+            hqlQuery = "select s FROM Song s JOIN s.albums a ";
         }
         hqlQuery+=" where 1=1";
         if (StringUtils.isNotBlank(payload.getName())) {
@@ -39,12 +46,12 @@ public class CustomizedSongRepositoryImpl implements CustomizedSongRepository {
         }
 
         if(album!=null){
-            hqlQuery += "  and ( :album IN s.albums)";
+            hqlQuery += "  and ( a = :album)";
             paramMap.put("album",album);
         }
 
         if (!isCount && pageable != null && pageable.getSort() != null) {
-            hqlQuery += " Order by " +"createdAt"+ " " + "ASC";
+            hqlQuery += " Order by " +"s.createdAt"+ " " + "ASC";
         }
 
         Query query = entityManager.createQuery(hqlQuery);

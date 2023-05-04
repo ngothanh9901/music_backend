@@ -31,4 +31,13 @@ public class Album extends DateAudit {
             inverseJoinColumns = @JoinColumn(name = "song_id")
     )
     private List<Song> songs;
+
+    @Override
+    public String toString() {
+        return "Album{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

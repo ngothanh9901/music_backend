@@ -14,6 +14,7 @@ import java.util.List;
 public interface AlbumRepository extends JpaRepository<Album, Long>, CustomizedAlbumRepository {
     Page<Album> findAllByUserId(Long userId, Pageable pageable);
     Album findByUserAndName(User user,String name);
+    Album findByUser(User user);
 
     @Query("select a.songs from Album a where a.id = ?1")
     List<Song> findSongsByAlbum(Long albumId);
