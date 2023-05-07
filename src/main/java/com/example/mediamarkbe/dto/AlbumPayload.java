@@ -15,10 +15,12 @@ public class AlbumPayload {
     private String name;
     private Long userId;
     private List<Long> songsId;
+    private String avatarUrl;
     public static Album convertToModel(AlbumPayload albumPayload){
         Album album = new Album();
         album.setId(albumPayload.getId());
         album.setName(albumPayload.getName());
+        album.setAvatarUrl(albumPayload.getAvatarUrl());
         return album;
     }
 }

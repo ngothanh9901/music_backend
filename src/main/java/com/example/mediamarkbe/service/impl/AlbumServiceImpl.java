@@ -6,15 +6,19 @@ import com.example.mediamarkbe.dto.SongPayload;
 import com.example.mediamarkbe.dto.SongResponse;
 import com.example.mediamarkbe.model.Album;
 import com.example.mediamarkbe.model.Song;
+import com.example.mediamarkbe.model.User;
 import com.example.mediamarkbe.respository.AlbumRepository;
 import com.example.mediamarkbe.respository.SongRepository;
 import com.example.mediamarkbe.respository.UserRepository;
+import com.example.mediamarkbe.security.UserPrincipal;
 import com.example.mediamarkbe.service.AlbumService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,13 +45,13 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public ResponseEntity<List<PlaylistResponse>> findAlbumsByUser(Long userId, Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok().body(albumRepository
-                .findAllByUserId(userId, pageable)
-                .get().map(album -> mapAlbumToDTO(album))
-                .collect(Collectors.toList())
-        );
+    public ResponseEntity<List<PlaylistResponse>> findAlbumsByUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        Long id = userPrincipal.getId();
+        List<Album> albums = albumRepository.findAllByUserId(id);
+        List<PlaylistResponse> responses = albums.stream().map(album -> mapAlbumToDTO(album)).collect(Collectors.toList());
+        return ResponseEntity.ok().body(responses);
     }
 
     @Override
@@ -68,8 +72,7 @@ public class AlbumServiceImpl implements AlbumService {
         playlistResponse.setName(album.getName());
         playlistResponse.setId(album.getId());
         playlistResponse.setUserId(album.getUser().getId());
-        playlistResponse.setCreated_at(album.getCreatedAt());
-        playlistResponse.setUpdated_at(album.getUpdatedAt());
+        playlistResponse.setAvatarUrl(album.getAvatarUrl());
         return playlistResponse;
     }
 }

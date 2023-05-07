@@ -22,10 +22,8 @@ public class AlbumController {
         return albumService.createAlbum(albumPayload);
     }
     @GetMapping
-    public ResponseEntity<List<PlaylistResponse>> findPlaylistsByUser(@RequestParam Long userId,
-                                                                @RequestParam Integer page,
-                                                                @RequestParam Integer size){
-        return albumService.findAlbumsByUser(userId, page, size);
+    public ResponseEntity<List<PlaylistResponse>> findPlaylistsByUser(){
+        return albumService.findAlbumsByUser();
     }
     @DeleteMapping
     public ResponseEntity<?> deletePlaylist(@RequestParam Long playlistId){
@@ -42,7 +40,7 @@ public class AlbumController {
     }
 
     @DeleteMapping("/deleteSong")
-    public ResponseEntity<?> deleteSongFromPlaylist(@RequestParam Long songId, @RequestParam Long playlistId){
+    public ResponseEntity<SongResponse> deleteSongFromPlaylist(@RequestParam Long songId, @RequestParam Long playlistId){
         return songService.deleteSongFromAlbum(songId, playlistId);
     }
     @GetMapping("/songs")

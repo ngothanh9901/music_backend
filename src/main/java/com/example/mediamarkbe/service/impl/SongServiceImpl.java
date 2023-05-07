@@ -23,6 +23,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,11 +63,11 @@ public class SongServiceImpl implements SongService {
         return ResponseEntity.ok().body(mapSongToDto(song));
     }
 
-    public ResponseEntity<?> deleteSongFromAlbum(Long songId, Long albumId){
+    public ResponseEntity<SongResponse> deleteSongFromAlbum(Long songId, Long albumId){
         Song song = songRepository.findById(songId).get();
         Album album = albumRepository.findById(albumId).get();
         album.getSongs().remove(song);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body(mapSongToDto(song));
     }
 
     @Override
@@ -92,6 +94,29 @@ public class SongServiceImpl implements SongService {
         List<Song> songs = albumRepository.findSongsByAlbum(albumId);
         List<SongResponse> songResponses = songs.stream().map(song -> mapSongToDto(song)).collect(Collectors.toList());
         return ResponseEntity.ok().body(songResponses);
+    }
+
+    @Override
+    public ResponseObject<SongResponse> findNew(FindingSongDTO payload, Pageable pageable) {
+        LocalDate endDate = LocalDate.now();
+        LocalDate startDate = endDate.minusWeeks(1);
+        Page<Song> data = songRepository.findSong(payload, pageable,null);
+        List<SongResponse> content = data.getContent()
+                .stream()
+                .filter(song -> {
+                    if(song.getCreatedDate().equals("")){
+                        return false;
+                    }
+                    LocalDate date = LocalDate.parse(song.getCreatedDate());
+                    return date.isEqual(endDate) || date.isEqual(startDate) || (date.isAfter(startDate) && date.isBefore(endDate));
+                })
+                .map(this::mapSongToDto)
+                .collect(Collectors.toList());
+        ResponseObject<SongResponse> responseObject = new ResponseObject<>(content,data.getNumber()+1,data.getSize(),
+                content.size(),data.getTotalPages(),data.isLast());
+
+        return responseObject;
+
     }
 
     private SongResponse mapSongToDto(Song song){

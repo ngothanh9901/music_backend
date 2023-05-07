@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface AlbumService {
-    ResponseEntity<List<PlaylistResponse>> findAlbumsByUser(Long userId, Integer page, Integer size);
+    ResponseEntity<List<PlaylistResponse>> findAlbumsByUser();
     ResponseEntity<PlaylistResponse> createAlbum(AlbumPayload albumPayload);
 
     ResponseEntity<?> deleteAlbum(Long albumId);

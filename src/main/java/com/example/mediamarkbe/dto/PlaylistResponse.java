@@ -12,7 +12,6 @@ import java.util.Date;
 public class PlaylistResponse {
     private Long id;
     private String name;
-    private Instant created_at;
-    private Instant updated_at;
+    private String avatarUrl;
     private Long userId;
 }

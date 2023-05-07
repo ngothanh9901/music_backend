@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface AlbumRepository extends JpaRepository<Album, Long>, CustomizedAlbumRepository {
-    Page<Album> findAllByUserId(Long userId, Pageable pageable);
+    List<Album> findAllByUserId(Long userId);
     Album findByUserAndName(User user,String name);
     Album findByUser(User user);
 

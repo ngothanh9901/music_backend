@@ -32,6 +32,7 @@ public class Album extends DateAudit {
     )
     private List<Song> songs;
 
+    private String avatarUrl;
     @Override
     public String toString() {
         return "Album{" +

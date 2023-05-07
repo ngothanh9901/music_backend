@@ -31,4 +31,9 @@ public class SongController {
     public ResponseObject<SongResponse> findSong(FindingSongDTO payload, Pageable pageable){
         return songService.findSong(payload,pageable);
     }
+
+    @GetMapping("/new")
+    public ResponseObject<SongResponse> findNewSong(FindingSongDTO payload, Pageable pageable){
+        return songService.findNew(payload, pageable);
+    }
 }
