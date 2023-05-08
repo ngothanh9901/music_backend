@@ -49,7 +49,10 @@ public class CustomizedSongRepositoryImpl implements CustomizedSongRepository {
             hqlQuery += "  and ( a = :album)";
             paramMap.put("album",album);
         }
-
+        if(StringUtils.isNotBlank(payload.getCategory())){
+            hqlQuery += " and ( lower(s.category) = :category )";
+            paramMap.put("category", payload.getCategory().trim());
+        }
         if (!isCount && pageable != null && pageable.getSort() != null) {
             hqlQuery += " Order by " +"s.createdAt"+ " " + "ASC";
         }
@@ -63,7 +66,6 @@ public class CustomizedSongRepositoryImpl implements CustomizedSongRepository {
             Integer pageSize = pageable.getPageSize();
             query.setFirstResult(pageFrom);
             query.setMaxResults(pageSize);
-
         }
         return query;
     }

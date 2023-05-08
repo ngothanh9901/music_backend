@@ -11,4 +11,5 @@ public class FindingSongDTO {
     String name;
     String abumName;
     boolean user ;
+    String category;
 }
