@@ -35,11 +35,17 @@ public class AlbumServiceImpl implements AlbumService {
     private final SongRepository songRepository;
     @Override
     public ResponseEntity<PlaylistResponse> createAlbum(AlbumPayload albumPayload) {
-        if(albumPayload.getUserId() == null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
         Album album = AlbumPayload.convertToModel(albumPayload);
-        album.setUser(userRepository.findById(albumPayload.getUserId()).get());
+        if(albumPayload.getUserId() == null || albumPayload.getUserId() == 0){
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+            Long id = userPrincipal.getId();
+            System.out.println(id);
+            album.setUser(userRepository.findById(id).get());
+        }
+        else {
+            album.setUser(userRepository.findById(albumPayload.getUserId()).get());
+        }
         PlaylistResponse playlistResponse = mapAlbumToDTO(albumRepository.saveAndFlush(album));
         return ResponseEntity.status(HttpStatus.CREATED).body(playlistResponse);
     }
