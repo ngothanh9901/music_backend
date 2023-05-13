@@ -12,7 +12,7 @@ public interface AlbumService {
     ResponseEntity<List<PlaylistResponse>> findAlbumsByUser();
     ResponseEntity<PlaylistResponse> createAlbum(AlbumPayload albumPayload);
 
-    ResponseEntity<?> deleteAlbum(Long albumId);
+    ResponseEntity<PlaylistResponse> deleteAlbum(Long albumId);
 
     ResponseEntity<?> editAlbum(AlbumPayload albumPayload);
 

@@ -61,9 +61,10 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public ResponseEntity<?> deleteAlbum(Long albumId) {
+    public ResponseEntity<PlaylistResponse> deleteAlbum(Long albumId) {
+        Album album = albumRepository.findById(albumId).get();
         albumRepository.deleteById(albumId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(mapAlbumToDTO(album));
     }
 
     @Override

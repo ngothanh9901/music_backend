@@ -26,7 +26,7 @@ public class AlbumController {
         return albumService.findAlbumsByUser();
     }
     @DeleteMapping
-    public ResponseEntity<?> deletePlaylist(@RequestParam Long playlistId){
+    public ResponseEntity<PlaylistResponse> deletePlaylist(@RequestParam Long playlistId){
         return albumService.deleteAlbum(playlistId);
     }
     @PutMapping
