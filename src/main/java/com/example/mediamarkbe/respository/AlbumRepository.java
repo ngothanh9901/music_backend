@@ -18,4 +18,9 @@ public interface AlbumRepository extends JpaRepository<Album, Long>, CustomizedA
 
     @Query("select a.songs from Album a where a.id = ?1")
     List<Song> findSongsByAlbum(Long albumId);
+
+    @Query("select a from Album a " +
+            "inner join a.songs s " +
+            "where s.id = ?1")
+    List<Album> findAlbumBySong(Long songId);
 }

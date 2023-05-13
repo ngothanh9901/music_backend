@@ -16,5 +16,6 @@ public interface AlbumService {
 
     ResponseEntity<?> editAlbum(AlbumPayload albumPayload);
 
+    ResponseEntity<List<PlaylistResponse>> findAlbumBySong(Long songId);
 
 }

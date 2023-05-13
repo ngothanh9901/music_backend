@@ -74,6 +74,20 @@ public class AlbumServiceImpl implements AlbumService {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
+    public ResponseEntity<List<PlaylistResponse>> findAlbumBySong(Long songId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        Long userId = userPrincipal.getId();
+        List<Album> albums = albumRepository.findAlbumBySong(songId);
+        List<PlaylistResponse> responses = albums
+                .stream()
+                .filter(album -> album.getUser().getId().equals(userId))
+                .map(album -> mapAlbumToDTO(album))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok().body(responses);
+    }
+
     private PlaylistResponse mapAlbumToDTO(Album album){
         PlaylistResponse playlistResponse = new PlaylistResponse();
         playlistResponse.setName(album.getName());

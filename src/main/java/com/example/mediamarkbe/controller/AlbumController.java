@@ -47,4 +47,8 @@ public class AlbumController {
     public ResponseEntity<List<SongResponse>> findSongsInPlaylist(@RequestParam Long playlistId){
         return songService.findSongsInAlbum(playlistId);
     }
+    @GetMapping("/findAlbumBySong")
+    public ResponseEntity<List<PlaylistResponse>> findAlbumBySong(@RequestParam Long songId){
+        return albumService.findAlbumBySong(songId);
+    }
 }
